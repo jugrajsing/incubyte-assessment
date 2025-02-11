@@ -1,0 +1,48 @@
+void main() {
+  final calculator = StringCalculator();
+
+  // Test Cases
+  print(calculator.add(""));
+  print(calculator.add("1"));
+  print(calculator.add("1,5"));
+  print(calculator.add("1\n2,3"));
+  print(calculator.add("//;\n1;2"));
+
+  try {
+    print(calculator.add("1,-2,3,-4"));
+  } catch (e) {
+    print(e);
+  }
+}
+
+class StringCalculator {
+  int add(String numbers) {
+    if (numbers.isEmpty) return 0;
+    numbers = numbers.replaceAll(RegExp(r'[^0-9-]'), ' ');
+
+    //numbers based on spaces
+    List<String> numList =
+        numbers.split(RegExp(r'\s+')).where((e) => e.isNotEmpty).toList();
+
+    int total = 0;
+    List<int> negativeNumbers = [];
+
+    for (var num in numList) {
+      final parsedNum = int.tryParse(num);
+      if (parsedNum == null) continue;
+
+      if (parsedNum.isNegative) {
+        negativeNumbers.add(parsedNum);
+      } else {
+        total += parsedNum;
+      }
+    }
+
+    if (negativeNumbers.isNotEmpty) {
+      throw FormatException(
+          "Negative numbers not allowed ${negativeNumbers.join(", ")}");
+    }
+
+    return total;
+  }
+}
